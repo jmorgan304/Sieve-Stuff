@@ -29,7 +29,7 @@ public class LongSieve {
 		this.lowerBound = 0;
 		this.upperBound = upperBound;
 		this.factorLimit = (long) Math.ceil(Math.sqrt(upperBound));
-		this.primes = new ArrayList<Long>();
+		
 	} // End of Constructor
 	
 	/**
@@ -43,7 +43,6 @@ public class LongSieve {
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 		this.factorLimit = (long) Math.ceil(Math.sqrt(upperBound));
-		this.primes = new ArrayList<Long>();
 		this.inputFile =  inputFile;
 	} // End of Constructor
 	
@@ -52,6 +51,7 @@ public class LongSieve {
 	 * below the square root of the specified upper bound to factor new potential ones.
 	 */
 	public void generatePrimes(){
+		this.primes = new ArrayList<Long>();
 		if(this.upperBound <= 2 || this.lowerBound >= this.upperBound){
 			return;
 		}

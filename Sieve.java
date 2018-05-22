@@ -29,7 +29,6 @@ public class Sieve {
 		this.lowerBound = 0;
 		this.upperBound = upperBound;
 		this.factorLimit = (int) Math.ceil(Math.sqrt(upperBound));
-		this.primes = new ArrayList<Integer>();
 	} // End of Constructor
 	
 	/**
@@ -43,7 +42,6 @@ public class Sieve {
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 		this.factorLimit = (int) Math.ceil(Math.sqrt(upperBound));
-		this.primes = new ArrayList<Integer>();
 		this.inputFile =  inputFile;
 	} // End of Constructor
 	
@@ -52,6 +50,7 @@ public class Sieve {
 	 * below the square root of the specified upper bound to factor new potential ones.
 	 */
 	public void generatePrimes(){
+		this.primes = new ArrayList<Integer>();
 		if(this.upperBound <= 2 || this.lowerBound >= this.upperBound){
 			return;
 		}
