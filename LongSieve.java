@@ -204,16 +204,29 @@ public class LongSieve {
 		return this.upperBound;
 	}
 	
+	public long getFactorLimit() {
+		return this.factorLimit;
+	}
+	
 	public ArrayList<Long> getPrimes(){
 		return this.primes;
 	}
 	
+	/**
+	 * @return The prime numbers below the factorLimit used to find primes below the upperLimit
+	 * Checks for null in the case where the sieve is being used in an iterated or parallel setup
+	 */
 	public ArrayList<Long> getPrimeFactors(){
+		if(this.primeFactors == null) {
+			this.primeFactors = getRequiredPrimes();
+		}
 		return this.primeFactors;
 	}
 	
+	/**
+	 * @param primeFactors The prime factors used to factor the numbers below the upperLimit
+	 */
 	public void setPrimeFactors(ArrayList<Long> primeFactors) {
-		// Only added for functionality within the IteratedSieve class, only called in getRequiredPrimes
 		this.primeFactors = primeFactors;
 	}
 	
