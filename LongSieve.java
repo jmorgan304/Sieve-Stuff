@@ -30,7 +30,6 @@ public class LongSieve {
 		this.upperBound = upperBound;
 		this.factorLimit = (long) Math.ceil(Math.sqrt(upperBound));
 		this.primes = new ArrayList<Long>();
-		generatePrimes();
 	} // End of Constructor
 	
 	/**
@@ -46,14 +45,13 @@ public class LongSieve {
 		this.factorLimit = (long) Math.ceil(Math.sqrt(upperBound));
 		this.primes = new ArrayList<Long>();
 		this.inputFile =  inputFile;
-		generatePrimes();
 	} // End of Constructor
 	
 	/**
-	 * This method implements a version of the Sieve of Eratosthenes which uses known primes 
+	 * This method implements a prime number sieve which uses known primes 
 	 * below the square root of the specified upper bound to factor new potential ones.
 	 */
-	private void generatePrimes(){
+	public void generatePrimes(){
 		if(this.upperBound <= 2 || this.lowerBound >= this.upperBound){
 			return;
 		}
@@ -129,6 +127,7 @@ public class LongSieve {
 				long lastPrimeInFile = previousPrimes.get(previousPrimes.size() - 1);
 				if(lastPrimeInFile < this.factorLimit) {
 					LongSieve intermediateSieve = new LongSieve(lastPrimeInFile + 2, this.factorLimit + 1, null);
+					intermediateSieve.generatePrimes();
 					// Generate the primes between the last prime in the file and the factor limit
 					for(long i : intermediateSieve.getPrimes()) {
 						previousPrimes.add(i);
@@ -139,6 +138,7 @@ public class LongSieve {
 			catch (IOException e){
 				System.out.println("Could not load file, generating primes below: " + this.lowerBound);
 				LongSieve lowerSieve = new LongSieve(this.factorLimit);
+				lowerSieve.generatePrimes();
 				return lowerSieve.getPrimes();
 			}
 		}
@@ -149,6 +149,7 @@ public class LongSieve {
 		else {
 			// No file provided, manually calculate the previous primes
 			LongSieve lowerSieve = new LongSieve(this.factorLimit);
+			lowerSieve.generatePrimes();
 			return lowerSieve.getPrimes();
 		}
 	} // End of getPreviousPrimes

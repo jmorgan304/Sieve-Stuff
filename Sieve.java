@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 /**
  * @author Josh Morgan
- * A class representing the Sieve of Eratosthenes.
+ * A class representing a prime number sieve.
  * The optimizations for this algorithm are:
  *     Using only the primes less than or equal to the square root of the upper bound to factor numbers.
  *     Searching only the odd numbers up to the upper bound (excluding 2)
@@ -30,7 +30,6 @@ public class Sieve {
 		this.upperBound = upperBound;
 		this.factorLimit = (int) Math.ceil(Math.sqrt(upperBound));
 		this.primes = new ArrayList<Integer>();
-		generatePrimes();
 	} // End of Constructor
 	
 	/**
@@ -46,14 +45,13 @@ public class Sieve {
 		this.factorLimit = (int) Math.ceil(Math.sqrt(upperBound));
 		this.primes = new ArrayList<Integer>();
 		this.inputFile =  inputFile;
-		generatePrimes();
 	} // End of Constructor
 	
 	/**
-	 * This method implements a version of the Sieve of Eratosthenes which uses known primes 
+	 * This method implements a prime number sieve which uses known primes 
 	 * below the square root of the specified upper bound to factor new potential ones.
 	 */
-	private void generatePrimes(){
+	public void generatePrimes(){
 		if(this.upperBound <= 2 || this.lowerBound >= this.upperBound){
 			return;
 		}
@@ -129,6 +127,7 @@ public class Sieve {
 				int lastPrimeInFile = previousPrimes.get(previousPrimes.size() - 1);
 				if(lastPrimeInFile < this.factorLimit) {
 					Sieve intermediateSieve = new Sieve(lastPrimeInFile + 2, this.factorLimit + 1, null);
+					intermediateSieve.generatePrimes();
 					// Generate the primes between the last prime in the file and the factor limit
 					for(int i : intermediateSieve.getPrimes()) {
 						previousPrimes.add(i);
@@ -139,6 +138,7 @@ public class Sieve {
 			catch (IOException e){
 				System.out.println("Could not load file, generating primes below: " + this.lowerBound);
 				Sieve lowerSieve = new Sieve(this.factorLimit);
+				lowerSieve.generatePrimes();
 				return lowerSieve.getPrimes();
 			}
 		}
@@ -149,6 +149,7 @@ public class Sieve {
 		else {
 			// No file provided, manually calculate the previous primes
 			Sieve lowerSieve = new Sieve(this.factorLimit);
+			lowerSieve.generatePrimes();
 			return lowerSieve.getPrimes();
 		}
 	} // End of getPreviousPrimes
