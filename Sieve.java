@@ -186,7 +186,7 @@ public class Sieve {
 	public void printInfo() {
 		System.out.println("This sieve looks for primes from " + this.lowerBound + " (inclusive) to " 
 				+ this.upperBound + " (exclusive).");
-		System.out.println("It will do this by using the primes below " + this.factorLimit 
+		System.out.println("It has done this by using the primes below " + this.factorLimit 
 				+ " to factor numbers in that range.");
 		System.out.println("There are " + this.primes.size() + " primes between " 
 				+ this.lowerBound + " (inclusive) and " + this.upperBound + " (exclusive)");
