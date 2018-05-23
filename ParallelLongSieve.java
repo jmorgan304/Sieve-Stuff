@@ -135,8 +135,10 @@ public class ParallelLongSieve extends LongSieve{
 	public void printInfo() {
 		System.out.println("This machine has " + this.numberOfCores + " core(s).");
 		System.out.println("Total parallel execution time: " + this.parallelExecutionTime + " milliseconds.");
+		System.out.println();
 		for(LongSieve ls : this.partialSieves) {
 			ls.printInfo();
+			System.out.println();
 		}
 	} // End of printInfo
 	
