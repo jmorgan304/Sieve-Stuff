@@ -12,7 +12,6 @@ public class ParallelLongSieveDriver {
 			}
 			ps.printInfo();
 		}
-		ps.printInfo();
 	}
 	
 	public static ParallelLongSieve processArgs(String[] args) {

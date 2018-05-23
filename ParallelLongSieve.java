@@ -24,14 +24,6 @@ public class ParallelLongSieve extends LongSieve{
 	ArrayList<LongSieve> partialSieves;
 	private long parallelExecutionTime;
 	
-	
-	/**
-	 * @param args REMOVE TO SEPARATE DRIVER CLASS LATER
-	 */
-	public static void main(String[] args) {
-		ParallelLongSieve ps1 = new ParallelLongSieve(10000000);
-	}
-	
 	/**
 	 * @param upperBound The upperBound of the search space (exclusive)
 	 * The call to super() will 
@@ -59,6 +51,10 @@ public class ParallelLongSieve extends LongSieve{
 		}
 	} // End of getSystemInfo
 	
+	/**
+	 * This method will create a FixedThreadPool with the number of cores on the machine - 1,
+	 * partition the sieves, time the total runtime, and combine the partitioned sieves.
+	 */
 	public void parallelSieve() {
 		ExecutorService EXEC = Executors.newFixedThreadPool(this.numberOfCores);
 		partitionSieves();
@@ -82,6 +78,11 @@ public class ParallelLongSieve extends LongSieve{
 		
 	} // End of parallelSieve
 	
+	/**
+	 * Partitions the numbers from lowerBound to upperBound into a number of smaller sieves equal to 
+	 * the number of cores - 1 on the machine. They will be approximately equal in size but the final sieve 
+	 * may be slightly larger in the case that the range of numbers isn't divisible by the number of cores - 1
+	 */
 	private void partitionSieves() {
 		this.partialSieves = new ArrayList<LongSieve>();
 		long sieveSize = (this.getUpperBound() - this.getLowerBound()) / this.numberOfCores;
@@ -97,6 +98,7 @@ public class ParallelLongSieve extends LongSieve{
 			// Need copies for thread safe access
 			for(Long factor : this.primeFactors) {
 				copiedPrimeFactors.add(factor);
+				// Dependent on Longs being immutable, which the should be
 			}
 			partial.setPrimeFactors(copiedPrimeFactors);
 			this.partialSieves.add(partial);
@@ -113,6 +115,10 @@ public class ParallelLongSieve extends LongSieve{
 		
 	} // End of partitionSieves
 	
+	/**
+	 * @param partials An ArrayList of the partial lists of primes to be combined
+	 * This method will combine the partial lists and then set the superclass' primes to the combined set
+	 */
 	private void combinePartials(ArrayList<ArrayList<Long>> partials) {
 		ArrayList<Long> primes = new ArrayList<Long>();
 		for(ArrayList<Long> partial : partials) {
