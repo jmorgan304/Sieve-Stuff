@@ -16,7 +16,7 @@ public class LongSieveDriver {
 	public static void main(String[] args) {
 		LongSieve primeSieve = processArgs(args);
 		if(primeSieve != null) {
-			primeSieve.generatePrimes();
+			primeSieve.call();
 			if(promptForWriting(primeSieve.getLowerBound(), primeSieve.getUpperBound(), false)) {
 				primeSieve.writePrimes();
 			}

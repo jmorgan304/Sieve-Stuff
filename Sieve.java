@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 /**
  * @author Josh Morgan
  * A class representing a prime number sieve.
@@ -12,7 +13,7 @@ import java.util.Scanner;
  *     Searching only the odd numbers up to the upper bound (excluding 2)
  * Using integers, this can get all the primes below 2,147,483,647.
  */
-public class Sieve {
+public class Sieve implements Callable<ArrayList<Integer>>{
 	private int lowerBound; 
 	private int upperBound;
 	private int factorLimit;
@@ -20,6 +21,7 @@ public class Sieve {
 	private ArrayList<Integer> primeFactors;
 	private String inputFile;
 	private String outputFile;
+	private long executionTime;
 	
 	/**
 	 * This is the standard sieve that will start from 0 and go to the upper bound (exclusive).
@@ -49,7 +51,7 @@ public class Sieve {
 	 * This method implements a prime number sieve which uses known primes 
 	 * below the square root of the specified upper bound to factor new potential ones.
 	 */
-	public void generatePrimes(){
+	private void generatePrimes(){
 		this.primes = new ArrayList<Integer>();
 		if(this.upperBound <= 2 || this.lowerBound >= this.upperBound){
 			return;
@@ -190,6 +192,7 @@ public class Sieve {
 				+ " to factor numbers in that range.");
 		System.out.println("There are " + this.primes.size() + " primes between " 
 				+ this.lowerBound + " (inclusive) and " + this.upperBound + " (exclusive)");
+		System.out.println("It did this in: " + this.executionTime / 1000 + " seconds.");
 		if(this.outputFile != null) {
 			System.out.println("The primes were written to: " + this.outputFile);
 		}
@@ -211,6 +214,10 @@ public class Sieve {
 		return this.primes;
 	}
 	
+	public long getExecutionTime() {
+		return this.executionTime;
+	}
+	
 	/**
 	 * @return The prime numbers below the factorLimit used to find primes below the upperLimit
 	 * Checks for null in the case where the sieve is being used in an iterated or parallel setup
@@ -229,5 +236,17 @@ public class Sieve {
 		// Only added for functionality within the IteratedSieve class, only called in getRequiredPrimes
 		this.primeFactors = primeFactors;
 	}
+	
+	/**
+	 * @return The primes from this sieve
+	 * This implements the callable interface for parallel execution and also allows the driver to call generatePrimes
+	 */
+	public ArrayList<Integer> call(){
+		long start = System.currentTimeMillis();
+		generatePrimes();
+		long end = System.currentTimeMillis();
+		this.executionTime = end - start;
+		return this.primes;
+	} // End of call
 	
 } // End of Sieve

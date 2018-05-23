@@ -16,7 +16,7 @@ public class SieveDriver {
 	public static void main(String[] args) {
 		Sieve primeSieve = processArgs(args);
 		if(primeSieve != null) {
-			primeSieve.generatePrimes();
+			primeSieve.call();
 			if(promptForWriting(primeSieve.getLowerBound(), primeSieve.getUpperBound(), false)) {
 				primeSieve.writePrimes();
 			}
