@@ -52,7 +52,11 @@ public class ParallelLongSieve extends LongSieve{
 	} // End of constructor
 	
 	private void getSystemInfo() {
-		this.numberOfCores = system.availableProcessors();
+		this.numberOfCores = system.availableProcessors() - 1;
+		// Leave one core for the OS
+		if(this.numberOfCores <= 0) {
+			this.numberOfCores = 1;
+		}
 	} // End of getSystemInfo
 	
 	public void parallelSieve() {
