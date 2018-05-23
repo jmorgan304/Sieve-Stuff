@@ -1,9 +1,5 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -19,30 +15,34 @@ import java.util.concurrent.Future;
 public class ParallelLongSieve extends LongSieve{
 	private static Runtime system = Runtime.getRuntime();
 	private int numberOfCores;
-	private long factorLimit;
 	private ArrayList<Long> primeFactors;
 	ArrayList<LongSieve> partialSieves;
 	private long parallelExecutionTime;
 	
 	/**
 	 * @param upperBound The upperBound of the search space (exclusive)
-	 * The call to super() will 
 	 * 
 	 */
 	ParallelLongSieve(long upperBound) {
 		super(upperBound);
-		this.factorLimit = this.getFactorLimit();
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
 	} // End of constructor
 	
+	/**
+	 * @param lowerBound The lowerBound of the search space (inclusive)
+	 * @param upperBound The upperBound of the search space (exclusive)
+	 * @param inputFile The optional input file to be used for the prime factors of the sieve
+	 */
 	ParallelLongSieve(long lowerBound, long upperBound, String inputFile) {
 		super(lowerBound, upperBound, inputFile);
-		this.factorLimit = this.getFactorLimit();
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
 	} // End of constructor
 	
+	/**
+	 * Gets the number of cores in the system and uses the number of cores - 1 for sieving
+	 */
 	private void getSystemInfo() {
 		this.numberOfCores = system.availableProcessors() - 1;
 		// Leave one core for the OS
@@ -136,8 +136,9 @@ public class ParallelLongSieve extends LongSieve{
 		System.out.println("This machine has " + this.numberOfCores + " core(s).");
 		System.out.println("Total parallel execution time: " + this.parallelExecutionTime + " milliseconds.");
 		System.out.println();
-		for(LongSieve ls : this.partialSieves) {
-			ls.printInfo();
+		for(int i = 0; i < this.partialSieves.size(); i++) {
+			System.out.println("Sieve " +  (i + 1) + "/" + this.partialSieves.size());
+			this.partialSieves.get(i).printInfo();
 			System.out.println();
 		}
 	} // End of printInfo

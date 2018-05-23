@@ -9,6 +9,7 @@ public class ParallelLongSieveDriver {
 			ps.call();
 			if(promptForWriting(ps.getLowerBound(), ps.getUpperBound(), false)) {
 				ps.writePrimes();
+				System.out.println();
 			}
 			ps.printInfo();
 		}
