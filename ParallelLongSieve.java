@@ -42,8 +42,6 @@ public class ParallelLongSieve extends LongSieve{
 		this.factorLimit = this.getFactorLimit();
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
-		parallelSieve();
-		printInfo();
 	} // End of constructor
 	
 	ParallelLongSieve(long lowerBound, long upperBound, String inputFile) {
@@ -51,16 +49,13 @@ public class ParallelLongSieve extends LongSieve{
 		this.factorLimit = this.getFactorLimit();
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
-		parallelSieve();
-		printInfo();
 	} // End of constructor
 	
 	private void getSystemInfo() {
 		this.numberOfCores = system.availableProcessors();
-		System.out.println("This machine has " + this.numberOfCores + " core(s).");
 	} // End of getSystemInfo
 	
-	private void parallelSieve() {
+	public void parallelSieve() {
 		ExecutorService EXEC = Executors.newFixedThreadPool(this.numberOfCores);
 		partitionSieves();
 		try {
@@ -72,7 +67,6 @@ public class ParallelLongSieve extends LongSieve{
 			}
 			long end = System.currentTimeMillis();
 			this.parallelExecutionTime = end - start;
-			System.out.println("Parallel execution time: " + this.parallelExecutionTime + " milliseconds.");
 			combinePartials(partials);
 		}
 		catch(Exception e) {
@@ -129,6 +123,8 @@ public class ParallelLongSieve extends LongSieve{
 	 * @see LongSieve#printInfo()
 	 */
 	public void printInfo() {
+		System.out.println("This machine has " + this.numberOfCores + " core(s).");
+		System.out.println("Total parallel execution time: " + this.parallelExecutionTime + " milliseconds.");
 		for(LongSieve ls : this.partialSieves) {
 			ls.printInfo();
 		}
