@@ -191,7 +191,7 @@ public class LongSieve implements Callable<ArrayList<Long>>{
 				+ this.upperBound + " (exclusive).");
 		System.out.println("It has done this by using the primes below " + this.factorLimit 
 				+ " to factor numbers in that range.");
-		System.out.println("It did this in: " + this.executionTime / 1000 + " seconds.");
+		System.out.println("It did this in: " + this.executionTime + " milliseconds.");
 		System.out.println("There are " + this.primes.size() + " primes between " 
 				+ this.lowerBound + " (inclusive) and " + this.upperBound + " (exclusive)");
 		if(this.outputFile != null) {
@@ -217,6 +217,10 @@ public class LongSieve implements Callable<ArrayList<Long>>{
 	
 	public long getExecutionTime() {
 		return this.executionTime;
+	}
+	
+	public void setPrimes(ArrayList<Long> primes) {
+		this.primes = primes;
 	}
 	
 	/**

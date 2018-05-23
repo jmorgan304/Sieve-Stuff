@@ -22,6 +22,15 @@ public class ParallelLongSieve extends LongSieve{
 	private long factorLimit;
 	private ArrayList<Long> primeFactors;
 	ArrayList<LongSieve> partialSieves;
+	private long parallelExecutionTime;
+	
+	
+	/**
+	 * @param args REMOVE TO SEPARATE DRIVER CLASS LATER
+	 */
+	public static void main(String[] args) {
+		ParallelLongSieve ps1 = new ParallelLongSieve(10000000);
+	}
 	
 	/**
 	 * @param upperBound The upperBound of the search space (exclusive)
@@ -33,7 +42,8 @@ public class ParallelLongSieve extends LongSieve{
 		this.factorLimit = this.getFactorLimit();
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
-	
+		parallelSieve();
+		printInfo();
 	} // End of constructor
 	
 	ParallelLongSieve(long lowerBound, long upperBound, String inputFile) {
@@ -41,28 +51,35 @@ public class ParallelLongSieve extends LongSieve{
 		this.factorLimit = this.getFactorLimit();
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
-		
+		parallelSieve();
+		printInfo();
 	} // End of constructor
 	
 	private void getSystemInfo() {
-		this.numberOfCores = system.availableProcessors() - 1;
-		// Leave one core for the system
-		
+		this.numberOfCores = system.availableProcessors();
+		System.out.println("This machine has " + this.numberOfCores + " core(s).");
 	} // End of getSystemInfo
 	
 	private void parallelSieve() {
 		ExecutorService EXEC = Executors.newFixedThreadPool(this.numberOfCores);
 		partitionSieves();
 		try {
+			ArrayList<ArrayList<Long>> partials = new ArrayList<ArrayList<Long>>();
 			long start = System.currentTimeMillis();
 			List<Future<ArrayList<Long>>> results = EXEC.invokeAll(this.partialSieves);
+			for(Future<ArrayList<Long>> result : results) {
+				partials.add(result.get());
+			}
 			long end = System.currentTimeMillis();
+			this.parallelExecutionTime = end - start;
+			System.out.println("Parallel execution time: " + this.parallelExecutionTime + " milliseconds.");
+			combinePartials(partials);
 		}
-		catch(InterruptedException e) {
-			
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 		finally {
-			
+			EXEC.shutdown();
 		}
 		
 	} // End of parallelSieve
@@ -80,7 +97,9 @@ public class ParallelLongSieve extends LongSieve{
 			LongSieve partial = new LongSieve(lowerBound, upperBound, null);
 			ArrayList<Long> copiedPrimeFactors = new ArrayList<Long>();
 			// Need copies for thread safe access
-			Collections.copy(copiedPrimeFactors, this.primeFactors);
+			for(Long factor : this.primeFactors) {
+				copiedPrimeFactors.add(factor);
+			}
 			partial.setPrimeFactors(copiedPrimeFactors);
 			this.partialSieves.add(partial);
 		}
@@ -88,10 +107,31 @@ public class ParallelLongSieve extends LongSieve{
 		LongSieve finalSieve = new LongSieve(upperBound, this.getUpperBound(), null);
 		// Making the last sieve the upperBound of the previous sieve and the real upper bound to deal with remainders
 		ArrayList<Long> copiedPrimeFactors = new ArrayList<Long>();
-		Collections.copy(copiedPrimeFactors, this.primeFactors);
+		for(Long factor : this.primeFactors) {
+			copiedPrimeFactors.add(factor);
+		}
 		finalSieve.setPrimeFactors(copiedPrimeFactors);
 		this.partialSieves.add(finalSieve);
 		
 	} // End of partitionSieves
+	
+	private void combinePartials(ArrayList<ArrayList<Long>> partials) {
+		ArrayList<Long> primes = new ArrayList<Long>();
+		for(ArrayList<Long> partial : partials) {
+			for(Long prime : partial) {
+				primes.add(prime);
+			}
+		}
+		this.setPrimes(primes);
+	}
+	
+	/* (non-Javadoc)
+	 * @see LongSieve#printInfo()
+	 */
+	public void printInfo() {
+		for(LongSieve ls : this.partialSieves) {
+			ls.printInfo();
+		}
+	} // End of printInfo
 	
 } // End of ParallelLongSieve

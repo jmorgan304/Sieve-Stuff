@@ -192,7 +192,7 @@ public class Sieve implements Callable<ArrayList<Integer>>{
 				+ " to factor numbers in that range.");
 		System.out.println("There are " + this.primes.size() + " primes between " 
 				+ this.lowerBound + " (inclusive) and " + this.upperBound + " (exclusive)");
-		System.out.println("It did this in: " + this.executionTime / 1000 + " seconds.");
+		System.out.println("It did this in: " + this.executionTime + " milliseconds.");
 		if(this.outputFile != null) {
 			System.out.println("The primes were written to: " + this.outputFile);
 		}
@@ -212,6 +212,10 @@ public class Sieve implements Callable<ArrayList<Integer>>{
 	
 	public ArrayList<Integer> getPrimes(){
 		return this.primes;
+	}
+	
+	public void setPrimes(ArrayList<Integer> primes) {
+		this.primes = primes;
 	}
 	
 	public long getExecutionTime() {
