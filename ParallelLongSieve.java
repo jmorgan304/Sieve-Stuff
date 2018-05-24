@@ -39,7 +39,7 @@ public class ParallelLongSieve extends LongSieve{
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
 	} // End of constructor
-	
+
 	/**
 	 * Gets the number of cores in the system and uses the number of cores - 1 for sieving
 	 */
