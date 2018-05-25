@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +22,8 @@ public class ParallelLongSieve extends LongSieve{
 	private ArrayList<Long> primeFactors;
 	ArrayList<LongSieve> partialSieves;
 	private long parallelExecutionTime;
+	private boolean recombinePartials = true;
+	// Default to true for non-iterative use
 	
 	/**
 	 * @param upperBound The upperBound of the search space (exclusive)
@@ -38,6 +44,20 @@ public class ParallelLongSieve extends LongSieve{
 		super(lowerBound, upperBound, inputFile);
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
+	} // End of constructor
+	
+	/**
+	 * @param lowerBound The lowerBound of the search space (inclusive)
+	 * @param upperBound The upperBound of the search space (exclusive)
+	 * @param inputFile The optional input file to be used for the prime factors of the sieve
+	 * @param recombinePartials A flag to indicate not to recombine the partials and just write them to the output file directly,
+	 * use if creating an iterative sieve
+	 */
+	ParallelLongSieve(long lowerBound, long upperBound, String inputFile, boolean recombinePartials) {
+		super(lowerBound, upperBound, inputFile);
+		this.primeFactors = super.getPrimeFactors();
+		getSystemInfo();
+		this.recombinePartials = recombinePartials;
 	} // End of constructor
 
 	/**
@@ -67,7 +87,17 @@ public class ParallelLongSieve extends LongSieve{
 			}
 			long end = System.currentTimeMillis();
 			this.parallelExecutionTime = end - start;
-			combinePartials(partials);
+			if(this.recombinePartials) {
+				combinePartials(partials);
+			}
+			else {
+				String outputFile = writePrimes(partials);
+				// Will be null if there was an issue
+				if(outputFile != null) {
+					super.setOutputFile(outputFile);
+					System.out.println("Written to: " + outputFile);
+				}
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -133,7 +163,7 @@ public class ParallelLongSieve extends LongSieve{
 	 * @see LongSieve#printInfo()
 	 */
 	public void printInfo() {
-		System.out.println("This machine has " + this.numberOfCores + " core(s).");
+		System.out.println("This machine has " + (this.numberOfCores + 1) + " core(s). Will run using " + this.numberOfCores + ".");
 		System.out.println("Total parallel execution time: " + this.parallelExecutionTime + " milliseconds.");
 		System.out.println();
 		for(int i = 0; i < this.partialSieves.size(); i++) {
@@ -142,5 +172,33 @@ public class ParallelLongSieve extends LongSieve{
 			System.out.println();
 		}
 	} // End of printInfo
+	
+	public String writePrimes(ArrayList<ArrayList<Long>> primePartials) {
+		if(this.recombinePartials) {
+			return super.writePrimes();
+		}
+		else {
+			// Need to write the partials to the same file
+			try {
+				String fileName = "Primes [" + super.getLowerBound() + "," + super.getUpperBound() + ").txt";
+				File outputFile = new File(fileName);
+				BufferedWriter outputWriter = new BufferedWriter(new FileWriter(outputFile));
+				
+				for(ArrayList<Long> partial : primePartials) {
+					for(long i : partial) {
+						outputWriter.write(String.valueOf(i));
+						outputWriter.newLine();
+					}
+				}
+				outputWriter.close();
+				return fileName;
+			}
+			catch(IOException e) {
+				System.out.println("Could not write primes to the specified file");
+				e.printStackTrace();
+				return null;
+			}
+		}
+	} // End of writePrimes
 	
 } // End of ParallelLongSieve

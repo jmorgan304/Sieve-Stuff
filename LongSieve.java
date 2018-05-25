@@ -219,8 +219,16 @@ public class LongSieve implements Callable<ArrayList<Long>>{
 		return this.executionTime;
 	}
 	
+	public String getOutputFile() {
+		return this.outputFile;
+	}
+	
 	public void setPrimes(ArrayList<Long> primes) {
 		this.primes = primes;
+	}
+	
+	public void setOutputFile(String outputFile) {
+		this.outputFile = outputFile;
 	}
 	
 	/**
