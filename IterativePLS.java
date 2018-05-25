@@ -43,7 +43,6 @@ public class IterativePLS extends ParallelLongSieve{
 		try {
 			Path path = Paths.get(outputFolder);
 			if(Files.exists(path)) {
-				System.out.println("Output folder exists");
 				return true;
 			}
 			else {
@@ -52,10 +51,8 @@ public class IterativePLS extends ParallelLongSieve{
 				File fileFolder = new File(folder);
 				if(fileFolder.mkdir()) {
 					// Create a folder on the same level as the java file
-					System.out.println("Made the output folder");
 					return true;
 				}
-				System.out.println("Error with outputFolder");
 				return false;
 			}
 		}
