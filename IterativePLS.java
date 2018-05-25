@@ -33,6 +33,7 @@ public class IterativePLS extends ParallelLongSieve{
 		this.iterations = iterations;
 		if(verifyOutputFolder(outputFolder)) {
 			// Start the sieving
+			iterate();
 		}
 		else {
 			// Error
