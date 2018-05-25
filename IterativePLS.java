@@ -1,4 +1,5 @@
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,19 +42,25 @@ public class IterativePLS extends ParallelLongSieve{
 	private boolean verifyOutputFolder(String outputFolder) {
 		try {
 			Path path = Paths.get(outputFolder);
-			System.out.println("Output folder exists");
-			return true;
-		}
-		catch(InvalidPathException e) {
-			// Path is invalid, create the outputFolder
-			String path = "../Primes";
-			File folder = new File(path);
-			if(folder.mkdir()) {
-				// Create a folder on the same level as the java file
-				System.out.println("Made the output folder");
+			if(Files.exists(path)) {
+				System.out.println("Output folder exists");
 				return true;
 			}
-			System.out.println("Error with outputFolder");
+			else {
+				// Path is invalid, create the outputFolder
+				String folder = "../Primes";
+				File fileFolder = new File(folder);
+				if(fileFolder.mkdir()) {
+					// Create a folder on the same level as the java file
+					System.out.println("Made the output folder");
+					return true;
+				}
+				System.out.println("Error with outputFolder");
+				return false;
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		
