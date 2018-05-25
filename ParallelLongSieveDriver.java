@@ -22,13 +22,13 @@ public class ParallelLongSieveDriver {
 		try {
 			switch(args.length) {
 				case 0 : throw new NumberFormatException();
-				case 1 : upperBound = Integer.parseInt(args[0]);
+				case 1 : upperBound = Long.parseLong(args[0]);
 					return new ParallelLongSieve(upperBound);
-				case 2 : lowerBound = Integer.parseInt(args[0]);
-					upperBound = Integer.parseInt(args[1]);
+				case 2 : lowerBound = Long.parseLong(args[0]);
+					upperBound = Long.parseLong(args[1]);
 					return new ParallelLongSieve(lowerBound, upperBound, null);
-				default : lowerBound = Integer.parseInt(args[0]);
-					upperBound = Integer.parseInt(args[1]);
+				default : lowerBound = Long.parseLong(args[0]);
+					upperBound = Long.parseLong(args[1]);
 					inputFile = args[2];
 					return new ParallelLongSieve(lowerBound, upperBound, inputFile);
 			}
