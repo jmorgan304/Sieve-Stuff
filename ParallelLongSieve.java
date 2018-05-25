@@ -22,7 +22,7 @@ public class ParallelLongSieve extends LongSieve{
 	private ArrayList<Long> primeFactors;
 	ArrayList<LongSieve> partialSieves;
 	private long parallelExecutionTime;
-	private boolean recombinePartials = true;
+	private String outputFolder;
 	// Default to true for non-iterative use
 	
 	/**
@@ -53,11 +53,11 @@ public class ParallelLongSieve extends LongSieve{
 	 * @param recombinePartials A flag to indicate not to recombine the partials and just write them to the output file directly,
 	 * use if creating an iterative sieve
 	 */
-	ParallelLongSieve(long lowerBound, long upperBound, String inputFile, boolean recombinePartials) {
+	ParallelLongSieve(long lowerBound, long upperBound, String inputFile, String outputFolder) {
 		super(lowerBound, upperBound, inputFile);
 		this.primeFactors = super.getPrimeFactors();
 		getSystemInfo();
-		this.recombinePartials = recombinePartials;
+		this.outputFolder = outputFolder;
 	} // End of constructor
 
 	/**
@@ -87,7 +87,7 @@ public class ParallelLongSieve extends LongSieve{
 			}
 			long end = System.currentTimeMillis();
 			this.parallelExecutionTime = end - start;
-			if(this.recombinePartials) {
+			if(this.outputFolder == null) {
 				combinePartials(partials);
 			}
 			else {
@@ -174,14 +174,15 @@ public class ParallelLongSieve extends LongSieve{
 	} // End of printInfo
 	
 	public String writePrimes(ArrayList<ArrayList<Long>> primePartials) {
-		if(this.recombinePartials) {
+		if(this.outputFolder == null) {
 			return super.writePrimes();
 		}
 		else {
 			// Need to write the partials to the same file
 			try {
 				String fileName = "Primes [" + super.getLowerBound() + "," + super.getUpperBound() + ").txt";
-				File outputFile = new File(fileName);
+				String path = this.outputFolder + "/" + fileName;
+				File outputFile = new File(path);
 				BufferedWriter outputWriter = new BufferedWriter(new FileWriter(outputFile));
 				
 				for(ArrayList<Long> partial : primePartials) {
@@ -200,5 +201,9 @@ public class ParallelLongSieve extends LongSieve{
 			}
 		}
 	} // End of writePrimes
+	
+	public String getOutputFolder() {
+		return this.outputFolder;
+	}
 	
 } // End of ParallelLongSieve
