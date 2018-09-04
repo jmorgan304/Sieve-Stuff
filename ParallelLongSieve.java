@@ -64,7 +64,7 @@ public class ParallelLongSieve extends LongSieve{
 	 * Gets the number of cores in the system and uses the number of cores - 1 for sieving
 	 */
 	private void getSystemInfo() {
-		this.numberOfCores = system.availableProcessors() - 1;
+		this.numberOfCores = system.availableProcessors() - 2;
 		// Leave one core for the OS
 		if(this.numberOfCores <= 0) {
 			this.numberOfCores = 1;
